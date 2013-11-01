@@ -15,14 +15,11 @@ class QuizController extends BaseController
 
     public function rulesAction()
     {
-        print_r($this->session->get('game')); exit;
+
     }
 
     public function playAction($question_number)
     {
-        if (!Validate::questionNumber($question_number)) {
-            $this->response->redirect('auth');
-        }
         if ($this->request->isPost()) {
             $answer_id = $this->request->getPost('answer_id');
             $spent_time = $this->request->getPost('spent_time');
@@ -40,8 +37,10 @@ class QuizController extends BaseController
                 $this->response->redirect('loose');
             }
         }
-        $question = Questions::getWithAnswers($question_number, $this->gameIdentity->topic);
-        $time_limit = Priority::getTimeLimit();
+
+        print_r($this->session); exit;
+        $question = Questions::getWithAnswers($this->session);
+        //$time_limit = Priority::getTimeLimit();
         $this->view->setVars(array(
             'question' => $question,
             'time_limit' => $time_limit

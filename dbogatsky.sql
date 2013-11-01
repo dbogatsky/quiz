@@ -76,16 +76,17 @@ CREATE TABLE IF NOT EXISTS `games` (
   KEY `topic_id_idx` (`topic_id`),
   CONSTRAINT `player_id` FOREIGN KEY (`player_id`) REFERENCES `players` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `topic_id` FOREIGN KEY (`topic_id`) REFERENCES `topics` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
--- Дамп данных таблицы dbogatsky.games: ~4 rows (приблизительно)
+-- Дамп данных таблицы dbogatsky.games: ~5 rows (приблизительно)
 /*!40000 ALTER TABLE `games` DISABLE KEYS */;
 INSERT INTO `games` (`id`, `name`, `topic_id`, `question_amount`, `player_id`, `is_winner`, `created_on`, `stoped_on`, `deleted`) VALUES
 	(1, 'football_quiz', 3, 1, 7, 0, '2013-10-31 23:41:22', NULL, 0),
 	(2, 'football_quiz', 3, 1, 7, 0, '2013-10-31 23:45:01', NULL, 0),
 	(3, 'football_quiz', 3, 1, 7, 0, '2013-10-31 23:45:44', NULL, 0),
 	(4, 'football_quiz', 3, 1, 7, 0, '2013-10-31 23:46:46', NULL, 0),
-	(5, 'football_quiz', 2, 1, 7, 0, '2013-10-31 23:49:04', NULL, 0);
+	(5, 'football_quiz', 2, 1, 7, 0, '2013-10-31 23:49:04', NULL, 0),
+	(6, 'football_quiz', 2, 1, 7, 0, '2013-11-01 21:43:36', NULL, 0);
 /*!40000 ALTER TABLE `games` ENABLE KEYS */;
 
 
@@ -194,14 +195,20 @@ DROP TABLE IF EXISTS `priority`;
 CREATE TABLE IF NOT EXISTS `priority` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(45) NOT NULL,
+  `question_numbers` varchar(6) NOT NULL,
   `time_limit` int(3) unsigned NOT NULL,
   `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
--- Дамп данных таблицы dbogatsky.priority: ~0 rows (приблизительно)
+-- Дамп данных таблицы dbogatsky.priority: ~4 rows (приблизительно)
 /*!40000 ALTER TABLE `priority` DISABLE KEYS */;
+INSERT INTO `priority` (`id`, `name`, `question_numbers`, `time_limit`, `created_on`, `deleted`) VALUES
+	(1, 'low', '1-5', 120, '2013-11-01 22:40:08', 0),
+	(2, 'medium', '6-10', 240, '2013-11-01 22:40:08', 0),
+	(3, 'high', '11-13', 300, '2013-11-01 22:40:08', 0),
+	(4, 'super', '14-15', 300, '2013-11-01 22:40:08', 0);
 /*!40000 ALTER TABLE `priority` ENABLE KEYS */;
 
 
@@ -209,18 +216,21 @@ CREATE TABLE IF NOT EXISTS `priority` (
 DROP TABLE IF EXISTS `questions`;
 CREATE TABLE IF NOT EXISTS `questions` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `text` text NOT NULL,
+  `text_en` text NOT NULL,
+  `text_ru` text NOT NULL,
   `priority_id` int(10) unsigned NOT NULL,
   `asked_amount` int(10) unsigned NOT NULL,
   `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `priority_id_idx` (`priority_id`),
-  CONSTRAINT `priority_id` FOREIGN KEY (`priority_id`) REFERENCES `priority` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  CONSTRAINT `priority_id` FOREIGN KEY (`id`) REFERENCES `priority` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
--- Дамп данных таблицы dbogatsky.questions: ~0 rows (приблизительно)
+-- Дамп данных таблицы dbogatsky.questions: ~1 rows (приблизительно)
 /*!40000 ALTER TABLE `questions` DISABLE KEYS */;
+INSERT INTO `questions` (`id`, `text_en`, `text_ru`, `priority_id`, `asked_amount`, `created_on`, `deleted`) VALUES
+	(1, 'What is football?', 'Что такое футбол?', 1, 0, '2013-11-01 22:49:20', 0);
 /*!40000 ALTER TABLE `questions` ENABLE KEYS */;
 
 

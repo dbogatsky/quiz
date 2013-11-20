@@ -21,7 +21,7 @@ class AuthController extends BaseController
             || ($this->request->isPost() && $this->authorize()))
         {
             $game = $this->session->get('game');
-            if ($game && !$game['finished']) {
+            if ($game && !$game['is_finished']) {
                 $this->response->redirect("play/{$game['question_number']}");
             }
             $this->response->redirect('start');
@@ -30,13 +30,13 @@ class AuthController extends BaseController
 
     public function endAction()
     {
-        $this->session->remove('player');
+        $this->session->destroy();
         $this->response->redirect('auth');
     }
 
     protected function authorize()
     {
-        // authorize already existsing
+        // authorize already existing
         if ($player = Players::getByEmail($this->email)) {
             return $this->setPlayerSession($player->id);
         }

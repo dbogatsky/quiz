@@ -41,3 +41,12 @@ $router->add(
         "action"     => "rules"
     )
 );
+
+$router->add(
+    "/play/:int",
+    array(
+        "controller" => "quiz",
+        "action"     => "play",
+        "question_number"  => 1
+    )
+);

@@ -15,17 +15,15 @@ class QuizController extends BaseController
 
     public function rulesAction()
     {
-        print_r($this->session->get('game')); exit;
+
     }
 
     public function playAction($question_number)
     {
-        if (!Validate::questionNumber($question_number)) {
-            $this->response->redirect('auth');
-        }
         if ($this->request->isPost()) {
             $answer_id = $this->request->getPost('answer_id');
             $spent_time = $this->request->getPost('spent_time');
+            $this->addAskedQuestionInSession($this->gameIdentity->current_question_id);
             if (Answers::isRight($answer_id)) {
                 $params = array(
                     'answer_id' => $answer_id,
@@ -40,12 +38,31 @@ class QuizController extends BaseController
                 $this->response->redirect('loose');
             }
         }
-        $question = Questions::getWithAnswers($question_number, $this->gameIdentity->topic);
-        $time_limit = Priority::getTimeLimit();
+        $question = Questions::getWithAnswers($question_number, $this->gameIdentity);
+        $this->saveQuestionParamsInSession($question);
         $this->view->setVars(array(
             'question' => $question,
-            'time_limit' => $time_limit
+            'time_limit' => $this->gameIdentity->time_limit
         ));
+    }
+
+    protected function addAskedQuestionInSession($question_id)
+    {
+        $game = $this->session->get('game');
+        if (!in_array($question_id, $game['asked_questions'])) {
+            $game['asked_questions'][] = $question_id;
+        }
+        $this->session->set('game', $game);
+        return $game;
+    }
+
+    protected function saveQuestionParamsInSession($question)
+    {
+        $game = $this->session->get('game');
+        $game['current_question_id'] = $question['id'];
+        $game['time_limit'] = $question['time_limit'];
+        $this->session->set('game', $game);
+        return $game;
     }
 
     public function winAction()

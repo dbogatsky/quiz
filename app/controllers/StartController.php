@@ -11,16 +11,15 @@ class StartController extends BaseController
     public function topicsAction()
     {
         if ($this->request->isPost()) {
-            $topic_id = $this->request->getPost('topic_id');
             $game = new Games();
-            $game->topic_id = $topic_id;
+            $game->topic_id = $this->request->getPost('topic_id');
             $game->player_id = $this->playerIdentity->player_id;
             if (!$game->save()) {
                 foreach ($game->getMessages() as $message) {
                     $this->flash->error((string) $message);
                 }
             }
-            $this->setGameSession($game->id);
+            $this->setGameSession($game);
             $this->response->redirect('rules');
         }
         $topics = Topics::find();
@@ -31,13 +30,19 @@ class StartController extends BaseController
         ));
     }
 
-    protected function setGameSession($id)
+    protected function setGameSession($game)
     {
+        $priorities = Priority::find('deleted = 0');
         $this->session->set('game', array(
-            'id' => $id,
-            'question_number' => 1,
+            'id' => $game->id,
+            'topic_id' => $game->topic_id,
+            'question_number' => 0,
+            'asked_questions' => array(),
+            'current_question_id' => null,
             'is_finished' => 0,
-            'is_wait' => 0
+            'is_wait' => 0,
+            'time_limit' => 0,
+            'priorities' => $priorities
         ));
         return $this->session->get('game');
     }

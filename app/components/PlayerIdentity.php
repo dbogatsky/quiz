@@ -4,18 +4,22 @@ class PlayerIdentity
 {
     protected $session;
 
-    public $player_id;
-    public $email;
-    public $name;
+    protected $available_properties = array(
+        'player_id',
+        'email',
+        'name'
+    );
 
     public function __construct($di)
     {
         $this->session = $di->get('session');
         if ($player = $this->session->get('player'))
         {
-            $this->player_id = isset($player['id']) ? $player['id'] : null;
-            $this->email = isset($player['email']) ? $player['email'] : null;
-            $this->name = isset($player['name']) ? $player['name'] : null;
+            foreach ($player as $key => $param) {
+                if (in_array($key, $this->available_properties)) {
+                    $this->{$key} = $param;
+                }
+            }
         }
     }
 }
